@@ -1,0 +1,29 @@
+import time
+import math
+import mpu6050
+
+#roll => up : -, down : +
+#pithc => left : -, right : +
+
+mpu = mpu6050.mpu6050(0x68)
+
+def read_sensor_data():
+    accelerometer_data = mpu.get_accel_data()
+
+    gyroscope_data = mpu.get_gyro_data()
+
+    temperature = mpu.get_temp()
+
+    return accelerometer_data, gyroscope_data, temperature
+
+def calculate_angle(accel_data):
+    x, y, z = accel_data['x'], accel_data['y'], accel_data['z']
+    roll = math.atan2(y, math.sqrt(x2 + z2))
+    pitch = math.atan2(-x, math.sqrt(y2 + z2))
+    return math.degrees(roll), math.degrees(pitch)
+
+while True:
+    accel_data, gyro_data, temp = read_sensor_data()
+    roll, pitch = calculate_angle(accel_data)
+    print(f"Roll: {roll:.2f} degrees, Pitch: {pitch:.2f} degrees")
+    time.sleep(1)
